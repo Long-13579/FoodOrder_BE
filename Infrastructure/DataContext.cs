@@ -323,40 +323,59 @@ public class DataContext
         new Food
         {
             Id = 31,
-            Name = "Cheesy Pizza",
-            Description = "Classic mozzarella pizza with tomato sauce",
+            Name = "Peach Tea",
+            Description = "Refreshing peach tea with real peach slices",
             Category = FoodCategory.Water,
-            Price = 9.99m,
+            Price = 10000,
             ImageUrl = "Image/foodImage.png"
         },
         new Food
         {
             Id = 32,
-            Name = "Burger Delight",
-            Description = "Juicy beef burger with crispy fries",
+            Name = "Sugarcane Juice",
+            Description = "Freshly pressed sugarcane juice, served cold",
             Category = FoodCategory.Water,
-            Price = 11.49m,
+            Price = 12000,
             ImageUrl = "Image/foodImage.png"
         },
         new Food
         {
             Id = 33,
-            Name = "Sushi Combo",
-            Description = "Fresh sushi platter with wasabi and soy sauce",
+            Name = "Soy Milk",
+            Description = "Nutritious soy milk, served hot or cold",
             Category = FoodCategory.Water,
-            Price = 14.99m,
+            Price = 15000,
+            ImageUrl = "Image/foodImage.png"
+        },
+        new Food
+        {
+            Id = 34,
+            Name = "Vietnamese Iced Coffee",
+            Description = "Traditional Vietnamese drip coffee with condensed milk",
+            Category = FoodCategory.Water,
+            Price = 10000,
+            ImageUrl = "Image/foodImage.png"
+        },
+        new Food
+        {
+            Id = 35,
+            Name = "Kumquat Tea",
+            Description = "Iced green tea with kumquat and a touch of salt",
+            Category = FoodCategory.Water,
+            Price = 20000,
             ImageUrl = "Image/foodImage.png"
         }
+
     ];
 
     private List<Food> OtherMenu() => [
         new Food
         {
-            Id = 34,
+            Id = 36,
             Name = "Ice",
             Description = "Cold ice",
             Category = FoodCategory.Other,
-            Price = 2.2m,
+            Price = 5000,
             ImageUrl = "Image/foodImage.png"
         }
     ];
