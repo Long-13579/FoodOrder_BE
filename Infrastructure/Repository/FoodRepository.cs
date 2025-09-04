@@ -1,14 +1,14 @@
 ﻿using Application.Common.Interfaces;
 using Domain;
-using Infrastucture;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 
 public class FoodRepository : IFoodRepository
 {
-    private readonly DataContext _context;
+    private readonly AppDbContext _context;
 
-    public FoodRepository(DataContext dataContext)
+    public FoodRepository(AppDbContext dataContext)
     {
         _context = dataContext;
     }
@@ -23,22 +23,19 @@ public class FoodRepository : IFoodRepository
         throw new NotImplementedException();
     }
 
-    public async Task<List<Food>> GetAllFoodsAsync()
+    public async Task<IEnumerable<Food>> GetAllFoodsAsync()
     {
-        await Task.Delay(10); // Simulate async operation
-        return _context.Foods;
+        return await _context.Foods.ToListAsync();
     }
 
     public async Task<Food> GetFoodByIdAsync(int id)
     {
-        await Task.Delay(10); // Simulate async operation
-        return _context.Foods.Where(x => x.Id == id).First();
+        return await _context.Foods.Where(x => x.Id == id).FirstAsync();
     }
 
-    public async Task<List<Food>> GetFoodsByCategoryAsync(FoodCategory category)
+    public async Task<IEnumerable<Food>> GetFoodsByCategoryAsync(FoodCategory category)
     {
-        await Task.Delay(10); // Simulate async operation
-        return _context.Foods.Where(x => x.Category == category).ToList();
+        return await _context.Foods.Where(x => x.Category == category).ToListAsync();
     }
 
     public Task UpdateFoodAsync(Food food)

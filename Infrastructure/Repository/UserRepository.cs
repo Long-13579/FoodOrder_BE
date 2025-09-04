@@ -1,17 +1,22 @@
 ﻿using Application.Common.Interfaces;
 using Domain;
 using Infrastucture;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly DataContext _context = new DataContext();
+    private readonly AppDbContext _context;
 
-    public async Task<User?> GetUserByIdAsync(string userId)
+    public UserRepository(AppDbContext dbContext)
     {
-        await Task.Delay(10);
-        return _context.Users
-            .FirstOrDefault(x => x.UserId == userId);
+        _context = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    }
+
+    public async Task<User?> GetUserByIdAsync(int userId)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(x => x.Id == userId);
     }
 }

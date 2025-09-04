@@ -4,5 +4,5 @@ namespace Application.Common.Interfaces;
 
 public interface IUserRepository
 {
-    Task<User?> GetUserByIdAsync(string userId);
+    Task<User?> GetUserByIdAsync(int userId);
 }

@@ -10,5 +10,6 @@ public class OrderItem
     public decimal Price { get; set; }
     public decimal Total => Quantity * Price;
 
-    public Food Food { get; set; } = new Food();
+    public Food Food { get; set; } = null!;
+    public Order Order { get; set; } = null!;
 }

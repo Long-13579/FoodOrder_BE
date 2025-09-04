@@ -1,8 +1,5 @@
-﻿using Application.FoodServices.Queries.GetAllFood;
-using Application.FoodServices.Queries.GetFoodByCategory;
-using Application.FoodServices.Queries.GetFoodById;
+﻿using Application.Services.Foods;
 using Domain;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers;
@@ -10,34 +7,37 @@ namespace WebApplication1.Controllers;
 [Route("api/food")]
 public class FoodController : ApiController
 {
-    private readonly ISender _mediator;
+    private readonly IFoodService _foodService;
 
-    public FoodController(ISender mediator)
+    public FoodController(IFoodService foodService)
     {
-        _mediator = mediator;
+        _foodService = foodService ?? throw new ArgumentNullException(nameof(foodService));
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllFood()
     {
-        IEnumerable<Food> foods = await _mediator.Send(new GetAllFoodQuery());
+        IEnumerable<Food> foods = await _foodService.GetAllFoodsAsync();
         return Ok(foods);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetFoodById(int id)
     {
-        var result = await _mediator.Send(new GetFoodByIdQuery(id));
+        var result = await _foodService.GetFoodByIdAsync(id);
         
-        return result.Match(
-            food => Ok(food), 
-            error => Problem(error));
+        if (result == null)
+        {
+            return NotFound($"Food with ID {id} not found.");
+        }
+
+        return Ok(result);
     }
 
     [HttpGet("by-category")]
     public async Task<IActionResult> GetFoodByCategory([FromQuery] FoodCategory category)
     {
-        var foods = await _mediator.Send(new GetFoodByCategoryQuery(category));
+        var foods = await _foodService.GetFoodsByCategoryAsync(category);
         return Ok(foods);
     }
 }

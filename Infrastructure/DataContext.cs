@@ -34,7 +34,7 @@ public class DataContext
     {
         var users = new List<User>();
         users.Add(new User{
-            UserId = "user01",
+            Id = 1,
             Name = "Test User"
         });
         return users;

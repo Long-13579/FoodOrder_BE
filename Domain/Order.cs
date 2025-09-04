@@ -3,7 +3,7 @@
 public class Order
 {
     public int Id { get; set; }
-    public string UserId { get; set; } = string.Empty;
+    public int UserId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
     public string CustomerEmail { get; set; } = string.Empty;
     public string CustomerPhone { get; set; } = string.Empty;
@@ -13,6 +13,8 @@ public class Order
     public OrderStatus Status { get; set; } = OrderStatus.WaitingForPayment;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public List<OrderItem> OrderItems { get; set; } = null!;
+    public User User { get; set; } = null!;
+
     public decimal Total => OrderItems.Sum(item => item.Total);
 }

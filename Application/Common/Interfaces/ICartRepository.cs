@@ -4,10 +4,10 @@ namespace Application.Common.Interfaces;
 
 public interface ICartRepository
 {
-    Task<List<CartItem>> GetCartByUserIdAsync(string userId);
+    Task<IEnumerable<CartItem>> GetCartByUserIdAsync(int userId);
     Task<CartItem?> GetCartItemByIdAsync(int cartItemId);
-    Task ClearCartAsync(string userId);
-    Task AddCartItemAsync(string userId, Food food, int quantity);
+    Task ClearCartAsync(int userId);
+    Task AddCartItemAsync(int userId, Food food, int quantity);
     Task UpdateQuantityAsync(int cartItemId, int quantity);
     Task DeleteCartItemAsync(int cartItemId);
 }

@@ -12,7 +12,7 @@ public class CartItemResponse
 
     public CartItemResponse(CartItem cartItem)
     {
-        Id = cartItem.CartItemId;
+        Id = cartItem.Id;
         Food = cartItem.Food;
         Quantity = cartItem.Quantity;
     }

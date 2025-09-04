@@ -1,10 +1,6 @@
-﻿using Application.CartServices.Commands.AddCartItem;
-using Application.CartServices.Commands.ClearCart;
-using Application.CartServices.Commands.DeleteCartItem;
-using Application.CartServices.Commands.UpdateQuantity;
-using Application.CartServices.Queries.GetCartByUserId;
+﻿using Application.Services.Carts;
 using Contract.Cart;
-using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers;
@@ -12,64 +8,57 @@ namespace WebApplication1.Controllers;
 [Route("api/cart")]
 public class CartController : ApiController
 {
-    private readonly ISender _mediator;
+    private readonly ICartService _cartService;
 
-    public CartController(ISender mediator)
+    public CartController(ICartService cartService)
     {
-        _mediator = mediator;
+        _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
     }
 
-    [HttpGet("{userId}")]
-    public async Task<IActionResult> GetCart(string userId)
+    [HttpGet("{userId:int}")]
+    public async Task<IActionResult> GetCart(int userId)
     {
-        var result = await _mediator.Send(new GetCartByUserIdQuery(userId));
+        var result = await _cartService.GetCartByUserIdAsync(userId);
 
-        return result.Match(
-            carts => Ok(CartItemResponse.FromDomain(carts)),
-            errors => Problem(errors));
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : BadRequest(result.Error);
     }
 
     [HttpPost("add")]
     public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
     {
-        AddCartItemCommand command = new(request.UserId, request.ProductId, request.Quantity);
+        var result = await _cartService.AddItemToCartAsync(request.UserId, request.ProductId, request.Quantity);
 
-        var result = await _mediator.Send(command);
-
-        return result.Match(
-            unit => Ok(),
-            errors => Problem(errors));
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetCart), new { userId = request.UserId }, null)
+            : BadRequest(result.Error);
     }
 
     [HttpPut("update")]
     public async Task<IActionResult> UpdateCartItem(UpdateCartItemRequest request)
     {
-        var command = new UpdateQuantityCommand(request.CartItemId, request.Quantity);
-        var result = await _mediator.Send(command);
-
-        return result.Match(
-            unit => Ok(),
-            errors => Problem(errors));
+        var result = await _cartService.UpdateItemQuantityAsync(request.CartItemId, request.Quantity);
+        return result.IsSuccess
+            ? Ok()
+            : BadRequest(result.Error);
     }
 
     [HttpDelete("remove/{cartItemId:int}")]
     public async Task<IActionResult> RemoveCartItem(int cartItemId)
     {
-        var command = new DeleteCartItemCommand(cartItemId);
-
-        await _mediator.Send(command);
-
-        return Ok();
+        var result = await _cartService.RemoveItemFromCartAsync(cartItemId);
+        return result.IsSuccess 
+            ? Ok() 
+            : BadRequest(result.Error);
     }
 
-    [HttpDelete("clear/{userId}")]
-    public async Task<IActionResult> ClearCart(string userId)
+    [HttpDelete("clear/{userId:int}")]
+    public async Task<IActionResult> ClearCart(int userId)
     {
-        var command = new ClearCartCommand(userId);
-        var result = await _mediator.Send(command);
-
-        return result.Match(
-            unit => Ok(),
-            errors => Problem(errors));
+        var result = await _cartService.ClearCartAsync(userId);
+        return result.IsSuccess 
+            ? Ok() 
+            : BadRequest(result.Error);
     }
 }

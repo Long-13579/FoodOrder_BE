@@ -1,24 +1,23 @@
 ﻿using Application.Common.Interfaces;
 using Domain;
 using Infrastucture;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 
 public class OrderRepository : IOrderRepository
 {
-    private readonly DataContext _context;
+    private readonly AppDbContext _context;
 
-    public OrderRepository(DataContext context)
+    public OrderRepository(AppDbContext context)
     {
         _context = context;
     }
 
     public async Task<int> AddOrderAsync(Order order)
     {
-        await Task.CompletedTask; 
-
-        order.Id = _context.Orders.Count() + 1; 
-        _context.Orders.Add(order);
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync();
 
         return order.Id;
     }
@@ -33,14 +32,12 @@ public class OrderRepository : IOrderRepository
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(string customerId)
+    public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)
     {
-        await Task.CompletedTask;
-
-        return await Task.FromResult(_context.Orders.Where(o => o.UserId == customerId).ToList());
+        return await _context.Orders.Where(o => o.UserId == customerId).ToListAsync();
     }
 
-    public Task<IEnumerable<Order>> GetOrdersByStatusAsync(string status)
+    public Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status)
     {
         throw new NotImplementedException();
     }
