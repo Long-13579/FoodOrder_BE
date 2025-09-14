@@ -1,6 +1,5 @@
 ﻿using Application.Common.Interfaces;
 using Domain;
-using Infrastucture;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
@@ -34,7 +33,9 @@ public class OrderRepository : IOrderRepository
 
     public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)
     {
-        return await _context.Orders.Where(o => o.UserId == customerId).ToListAsync();
+        return await _context.Orders
+            .Include(o => o.OrderItems)
+            .Where(o => o.UserId == customerId).ToListAsync();
     }
 
     public Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status)

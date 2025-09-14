@@ -1,34 +1,48 @@
-﻿using Application.Services.Carts;
-using Contract.Cart;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Application.Carts.Commands.AddItemToCart;
+using Application.Carts.Commands.ClearCart;
+using Application.Carts.Commands.RemoveItemFromCart;
+using Application.Carts.Commands.UpdateItemQuantity;
+using Application.Carts.Queries.GetCartItemsByUserId;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Contracts.Carts;
 
 namespace WebApplication1.Controllers;
 
 [Route("api/cart")]
 public class CartController : ApiController
 {
-    private readonly ICartService _cartService;
+    private readonly ISender _sender;
 
-    public CartController(ICartService cartService)
+    public CartController(ISender sender)
     {
-        _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
+        _sender = sender;
     }
 
     [HttpGet("{userId:int}")]
     public async Task<IActionResult> GetCart(int userId)
     {
-        var result = await _cartService.GetCartByUserIdAsync(userId);
+        var result = await _sender.Send(new GetCartItemsByUserIdQuery(userId));
 
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : BadRequest(result.Error);
+        if (result.IsSuccess)
+        {
+            return result.Value is null
+                ? Ok()
+                : Ok(CartResponse.FromDomain(result.Value.ToList()));
+        }
+        else
+        {
+            return BadRequest(result.Error);
+        }
     }
 
     [HttpPost("add")]
     public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
     {
-        var result = await _cartService.AddItemToCartAsync(request.UserId, request.ProductId, request.Quantity);
+        var command = new AddItemToCartCommand(request.UserId,
+                                               request.FoodId,
+                                               request.Quantity);
+        var result = await _sender.Send(command);
 
         return result.IsSuccess
             ? CreatedAtAction(nameof(GetCart), new { userId = request.UserId }, null)
@@ -38,7 +52,10 @@ public class CartController : ApiController
     [HttpPut("update")]
     public async Task<IActionResult> UpdateCartItem(UpdateCartItemRequest request)
     {
-        var result = await _cartService.UpdateItemQuantityAsync(request.CartItemId, request.Quantity);
+        var command = new UpdateItemQuantityCommand(request.CartItemId,
+                                                    request.Quantity);
+        var result = await _sender.Send(command);
+
         return result.IsSuccess
             ? Ok()
             : BadRequest(result.Error);
@@ -47,7 +64,7 @@ public class CartController : ApiController
     [HttpDelete("remove/{cartItemId:int}")]
     public async Task<IActionResult> RemoveCartItem(int cartItemId)
     {
-        var result = await _cartService.RemoveItemFromCartAsync(cartItemId);
+        var result = await _sender.Send(new RemoveItemFromCartCommand(cartItemId));
         return result.IsSuccess 
             ? Ok() 
             : BadRequest(result.Error);
@@ -56,7 +73,7 @@ public class CartController : ApiController
     [HttpDelete("clear/{userId:int}")]
     public async Task<IActionResult> ClearCart(int userId)
     {
-        var result = await _cartService.ClearCartAsync(userId);
+        var result = await _sender.Send(new ClearCartCommand(userId));
         return result.IsSuccess 
             ? Ok() 
             : BadRequest(result.Error);

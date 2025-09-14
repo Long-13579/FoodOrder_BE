@@ -15,5 +15,17 @@ public static partial class Errors
             new (Code: "CartItem.InvalidQuantity",
                  Description: $"Invalid quantity {quantity}. Quantity must be greater than 0.",
                  Type: ErrorType.Validation);
+
+        public static Error Empty() =>
+            new(
+                Code: "CartItem.Empty",
+                Description: "The cart is empty.",
+                Type: ErrorType.Validation);
+
+        public static Error SomeItemsInvalid() =>
+            new(
+                Code: "CartItem.SomeItemsInvalid",
+                Description: "Some cart items are invalid or not found for the current user.",
+                Type: ErrorType.Validation);
     }
 }

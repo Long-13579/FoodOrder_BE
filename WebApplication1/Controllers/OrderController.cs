@@ -1,30 +1,45 @@
-﻿using Application.Services.Orders;
-using Contract.Order;
+﻿using Application.Orders.Commands.CreateOrder;
+using Application.Orders.Queries.GetOrdersByUserId;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Contracts.Orders;
 
 namespace WebApplication1.Controllers;
 
 [Route("api/order")]
 public class OrderController : ApiController
 {
-    private readonly IOrderService _orderService;
+    private readonly ISender _sender;
 
-    public OrderController(IOrderService orderService)
+    public OrderController(ISender sender)
     {
-        _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+        _sender = sender;
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddOrder([FromBody] AddOrderRequest request)
+    public async Task<IActionResult> AddOrder([FromBody] CreateOrderRequest request)
     {
-        await _orderService.AddOrderAsync(request.ToDomain());
-        return CreatedAtAction(nameof(GetOrdersByUserId), new { userId = request.UserId }, null);
+        var command = new CreateOrderCommand(request.CartItemIds,
+                                             request.UserId,
+                                             request.CustomerName,
+                                             request.CustomerEmail,
+                                             request.CustomerPhone,
+                                             request.CustomerAddress,
+                                             request.Note);
+        var result = await _sender.Send(command);
+
+        return result.IsSuccess
+            ? CreatedAtAction(nameof(GetOrdersByUserId), new { userId = request.UserId }, null)
+            : BadRequest(result.Error);
     }
 
     [HttpGet("by-userId/{userId:int}")]
     public async Task<IActionResult> GetOrdersByUserId(int userId)
     {
-        var orders = await _orderService.GetOrdersByUserIdAsync(userId);
-        return Ok(orders);
+        var result = await _sender.Send(new GetOrdersByUserIdQuery(userId));
+
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Error);
     }
 }

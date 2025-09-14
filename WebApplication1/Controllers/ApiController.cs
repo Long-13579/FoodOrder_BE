@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+﻿using Application.Common.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

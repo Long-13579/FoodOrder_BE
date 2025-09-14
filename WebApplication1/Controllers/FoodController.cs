@@ -1,5 +1,8 @@
-﻿using Application.Services.Foods;
+﻿using Application.Foods.Queries.GetAllFoods;
+using Application.Foods.Queries.GetFoodById;
+using Application.Foods.Queries.GetFoodsByCategory;
 using Domain;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers;
@@ -7,37 +10,37 @@ namespace WebApplication1.Controllers;
 [Route("api/food")]
 public class FoodController : ApiController
 {
-    private readonly IFoodService _foodService;
+    private readonly ISender _sender;
 
-    public FoodController(IFoodService foodService)
+    public FoodController(ISender sender)
     {
-        _foodService = foodService ?? throw new ArgumentNullException(nameof(foodService));
+        _sender = sender;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllFood()
     {
-        IEnumerable<Food> foods = await _foodService.GetAllFoodsAsync();
-        return Ok(foods);
+        var result = await _sender.Send(new GetAllFoodsQuery());
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Error);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetFoodById(int id)
     {
-        var result = await _foodService.GetFoodByIdAsync(id);
-        
-        if (result == null)
-        {
-            return NotFound($"Food with ID {id} not found.");
-        }
-
-        return Ok(result);
+        var result = await _sender.Send(new GetFoodByIdQuery(id));
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : NotFound(result.Error);
     }
 
     [HttpGet("by-category")]
     public async Task<IActionResult> GetFoodByCategory([FromQuery] FoodCategory category)
     {
-        var foods = await _foodService.GetFoodsByCategoryAsync(category);
-        return Ok(foods);
+        var result = await _sender.Send(new GetFoodsByCategoryQuery(category));
+        return result.IsSuccess 
+            ? Ok(result.Value) 
+            : BadRequest(result.Error);
     }
 }

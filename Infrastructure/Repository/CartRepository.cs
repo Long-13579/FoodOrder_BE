@@ -57,7 +57,15 @@ public class CartRepository : ICartRepository
     public async Task<IEnumerable<CartItem>> GetCartByUserIdAsync(int userId)
     {
         return await _context.CartItems
+            .Include(x => x.Food)
             .Where(x => x.UserId == userId).ToListAsync();
+    }
+
+    public async Task<IEnumerable<CartItem>> GetCartItemByIdsAsync(int userId, IEnumerable<int> cartItemIds)
+    {
+        return await _context.CartItems
+            .Where(x => x.UserId == userId && cartItemIds.Contains(x.Id))
+            .ToListAsync();
     }
 
     public async Task UpdateQuantityAsync(int cartItemId, int quantity)

@@ -1,6 +1,5 @@
 ﻿using Application.Common.Interfaces;
 using Domain;
-using Infrastucture;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
