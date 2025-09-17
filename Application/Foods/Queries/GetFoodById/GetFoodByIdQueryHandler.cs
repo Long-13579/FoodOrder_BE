@@ -1,8 +1,8 @@
-﻿using Application.Common.Interfaces;
-using Application.Common.Results;
+﻿using Application.Common.Results;
 using Application.Common.Errors;
 using Domain;
 using MediatR;
+using Application.Common.Interfaces.Persistance.Repositories;
 
 namespace Application.Foods.Queries.GetFoodById;
 

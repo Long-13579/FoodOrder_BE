@@ -1,5 +1,7 @@
 using Application;
 using Infrastructure;
+using Infrastructure.Persistance;
+using Infrastructure.Persistance.Initializer;
 using WebApplication1;
 
 var builder = WebApplication.CreateBuilder(args);

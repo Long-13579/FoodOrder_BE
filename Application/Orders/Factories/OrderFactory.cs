@@ -1,8 +1,8 @@
-﻿using Application.Common.Interfaces;
-using Application.Common.Results;
+﻿using Application.Common.Results;
 using Application.Orders.Commands.CreateOrder;
 using Application.Common.Errors;
 using Domain;
+using Application.Common.Interfaces.Persistance.Repositories;
 
 namespace Application.Orders.Factories;
 

@@ -1,10 +1,10 @@
 ﻿using Domain;
 
-namespace Application.Common.Interfaces;
+namespace Application.Common.Interfaces.Persistance.Repositories;
 
-public interface IOrderRepository
+public interface IOrderRepository : IRepository<int>
 {
-    Task<Order> GetOrderByIdAsync(int orderId);
+    Task<Order?> GetOrderByIdAsync(int orderId);
     Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId);
     Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status);
     Task<int> AddOrderAsync(Order order);

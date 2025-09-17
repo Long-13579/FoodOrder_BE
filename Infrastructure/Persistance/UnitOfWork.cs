@@ -1,7 +1,7 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Persistance;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistance;
 
 public class UnitOfWork : IUnitOfWork
 {

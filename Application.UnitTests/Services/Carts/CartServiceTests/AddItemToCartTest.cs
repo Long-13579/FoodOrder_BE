@@ -1,7 +1,8 @@
-﻿using Application.Common.Interfaces;
-using Application.Services.Carts;
+﻿using Application.Services.Carts;
 using Application.Common.Errors;
 using Moq;
+using Application.Common.Interfaces.Persistance;
+using Application.Common.Interfaces.Persistance.Repositories;
 
 namespace Application.UnitTests.Services.Carts.CartServiceTests;
 

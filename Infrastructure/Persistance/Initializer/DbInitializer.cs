@@ -1,6 +1,6 @@
 ﻿using Domain;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistance.Initializer;
 
 public static class DbInitializer
 {

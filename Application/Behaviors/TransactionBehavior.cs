@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Persistance;
 using Application.Common.Requests;
 using MediatR;
 

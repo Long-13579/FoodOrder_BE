@@ -1,8 +1,8 @@
 using Domain;
 
-namespace Application.Common.Interfaces;
+namespace Application.Common.Interfaces.Persistance.Repositories;
 
-public interface ICartRepository
+public interface ICartRepository : IRepository<int>
 {
     Task<IEnumerable<CartItem>> GetCartByUserIdAsync(int userId);
     Task<CartItem?> GetCartItemByIdAsync(int cartItemId);

@@ -32,7 +32,7 @@ public class CartController : ApiController
         }
         else
         {
-            return BadRequest(result.Error);
+            return Problem(result.Errors);
         }
     }
 
@@ -46,7 +46,7 @@ public class CartController : ApiController
 
         return result.IsSuccess
             ? CreatedAtAction(nameof(GetCart), new { userId = request.UserId }, null)
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 
     [HttpPut("update")]
@@ -58,7 +58,7 @@ public class CartController : ApiController
 
         return result.IsSuccess
             ? Ok()
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 
     [HttpDelete("remove/{cartItemId:int}")]
@@ -67,7 +67,7 @@ public class CartController : ApiController
         var result = await _sender.Send(new RemoveItemFromCartCommand(cartItemId));
         return result.IsSuccess 
             ? Ok() 
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 
     [HttpDelete("clear/{userId:int}")]
@@ -76,6 +76,6 @@ public class CartController : ApiController
         var result = await _sender.Send(new ClearCartCommand(userId));
         return result.IsSuccess 
             ? Ok() 
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 }

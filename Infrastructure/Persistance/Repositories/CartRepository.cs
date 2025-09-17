@@ -1,8 +1,8 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Persistance.Repositories;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repository;
+namespace Infrastructure.Persistance.Repositories;
 
 public class CartRepository : ICartRepository
 {
@@ -74,5 +74,10 @@ public class CartRepository : ICartRepository
             .Where(x => x.Id == cartItemId)
             .ExecuteUpdateAsync(setter => setter
                 .SetProperty(c => c.Quantity, quantity));
+    }
+
+    public Task<bool> ExistsAsync(int id)
+    {
+        return _context.CartItems.AnyAsync(x => x.Id == id);
     }
 }

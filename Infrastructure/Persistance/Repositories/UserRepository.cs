@@ -1,8 +1,8 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Persistance.Repositories;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repository;
+namespace Infrastructure.Persistance.Repositories;
 
 public class UserRepository : IUserRepository
 {
@@ -11,6 +11,11 @@ public class UserRepository : IUserRepository
     public UserRepository(AppDbContext dbContext)
     {
         _context = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    }
+
+    public Task<bool> ExistsAsync(int id)
+    {
+        return _context.Users.AnyAsync(x => x.Id == id);
     }
 
     public async Task<User?> GetUserByIdAsync(int userId)

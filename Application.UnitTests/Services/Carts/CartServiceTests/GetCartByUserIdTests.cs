@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Persistance;
+using Application.Common.Interfaces.Persistance.Repositories;
 using Application.Services.Carts;
 using Domain;
 using Moq;

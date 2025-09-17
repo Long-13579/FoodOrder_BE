@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Persistance.Repositories;
 using Application.Common.Results;
 using Application.Orders.Factories;
 using MediatR;
@@ -21,7 +21,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         var orderResult = await _orderFactory.CreateAsync(request);
         if (!orderResult.IsSuccess || orderResult.Value is null)
         {
-            return orderResult.Error;
+            return orderResult.Errors;
         }
 
         await _orderRepository.AddOrderAsync(orderResult.Value);

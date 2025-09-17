@@ -23,7 +23,7 @@ public class FoodController : ApiController
         var result = await _sender.Send(new GetAllFoodsQuery());
         return result.IsSuccess 
             ? Ok(result.Value) 
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 
     [HttpGet("{id:int}")]
@@ -32,7 +32,7 @@ public class FoodController : ApiController
         var result = await _sender.Send(new GetFoodByIdQuery(id));
         return result.IsSuccess
             ? Ok(result.Value)
-            : NotFound(result.Error);
+            : Problem(result.Errors);
     }
 
     [HttpGet("by-category")]
@@ -41,6 +41,6 @@ public class FoodController : ApiController
         var result = await _sender.Send(new GetFoodsByCategoryQuery(category));
         return result.IsSuccess 
             ? Ok(result.Value) 
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 }

@@ -30,7 +30,7 @@ public class OrderController : ApiController
 
         return result.IsSuccess
             ? CreatedAtAction(nameof(GetOrdersByUserId), new { userId = request.UserId }, null)
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 
     [HttpGet("by-userId/{userId:int}")]
@@ -40,6 +40,6 @@ public class OrderController : ApiController
 
         return result.IsSuccess 
             ? Ok(result.Value) 
-            : BadRequest(result.Error);
+            : Problem(result.Errors);
     }
 }

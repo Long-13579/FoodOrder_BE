@@ -1,5 +1,7 @@
-﻿using Application.Common.Interfaces;
-using Infrastructure.Repository;
+﻿using Application.Common.Interfaces.Persistance;
+using Application.Common.Interfaces.Persistance.Repositories;
+using Infrastructure.Persistance;
+using Infrastructure.Persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

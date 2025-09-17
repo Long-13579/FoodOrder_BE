@@ -1,8 +1,8 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Persistance.Repositories;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repository;
+namespace Infrastructure.Persistance.Repositories;
 
 public class OrderRepository : IOrderRepository
 {
@@ -26,7 +26,12 @@ public class OrderRepository : IOrderRepository
         throw new NotImplementedException();
     }
 
-    public Task<Order> GetOrderByIdAsync(int orderId)
+    public Task<bool> ExistsAsync(int id)
+    {
+        return _context.Orders.AnyAsync(x => x.Id == id);
+    }
+
+    public Task<Order?> GetOrderByIdAsync(int orderId)
     {
         throw new NotImplementedException();
     }
