@@ -1,5 +1,7 @@
-﻿using Application.Common.Interfaces.Persistance;
+﻿using Application.Common.Interfaces.Authentication;
+using Application.Common.Interfaces.Persistance;
 using Application.Common.Interfaces.Persistance.Repositories;
+using Infrastructure.Authentication;
 using Infrastructure.Persistance;
 using Infrastructure.Persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +22,10 @@ public static class DependencyInjection
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
         return services;
     }

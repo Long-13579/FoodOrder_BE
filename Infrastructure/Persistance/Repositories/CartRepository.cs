@@ -18,7 +18,7 @@ public class CartRepository : ICartRepository
         return await _context.CartItems.FirstOrDefaultAsync(x => x.Id == cartItemId);
     }
 
-    public async Task AddCartItemAsync(int userId, Food food, int quantity)
+    public async Task AddCartItemAsync(Guid userId, Food food, int quantity)
     {
         CartItem? cartItem = await _context.CartItems.FirstOrDefaultAsync(x => x.UserId == userId && x.FoodId == food.Id);
 
@@ -40,7 +40,7 @@ public class CartRepository : ICartRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task ClearCartAsync(int userId)
+    public async Task ClearCartAsync(Guid userId)
     {
         await _context.CartItems
             .Where(x => x.UserId == userId)
@@ -54,14 +54,14 @@ public class CartRepository : ICartRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task<IEnumerable<CartItem>> GetCartByUserIdAsync(int userId)
+    public async Task<IEnumerable<CartItem>> GetCartByUserIdAsync(Guid userId)
     {
         return await _context.CartItems
             .Include(x => x.Food)
             .Where(x => x.UserId == userId).ToListAsync();
     }
 
-    public async Task<IEnumerable<CartItem>> GetCartItemByIdsAsync(int userId, IEnumerable<int> cartItemIds)
+    public async Task<IEnumerable<CartItem>> GetCartItemByIdsAsync(Guid userId, IEnumerable<int> cartItemIds)
     {
         return await _context.CartItems
             .Where(x => x.UserId == userId && cartItemIds.Contains(x.Id))

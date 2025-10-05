@@ -19,8 +19,8 @@ public class CartController : ApiController
         _sender = sender;
     }
 
-    [HttpGet("{userId:int}")]
-    public async Task<IActionResult> GetCart(int userId)
+    [HttpGet("{userId:Guid}")]
+    public async Task<IActionResult> GetCart(Guid userId)
     {
         var result = await _sender.Send(new GetCartItemsByUserIdQuery(userId));
 
@@ -70,8 +70,8 @@ public class CartController : ApiController
             : Problem(result.Errors);
     }
 
-    [HttpDelete("clear/{userId:int}")]
-    public async Task<IActionResult> ClearCart(int userId)
+    [HttpDelete("clear/{userId:Guid}")]
+    public async Task<IActionResult> ClearCart(Guid userId)
     {
         var result = await _sender.Send(new ClearCartCommand(userId));
         return result.IsSuccess 

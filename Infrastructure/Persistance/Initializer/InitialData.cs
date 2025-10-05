@@ -1,17 +1,53 @@
 ﻿using Domain;
+using Domain.Constants;
 
 namespace Infrastructure.Persistance.Initializer;
 
 public static class InitialData
 {
+    private static Guid userId = Guid.NewGuid();
     public static List<User> GenerateUsers()
     {
         var users = new List<User>();
         users.Add(new User
         {
-            Name = "Test User"
+            Id = userId,
+            UserName = "DefaultUser",
+            FirstName = "Default",
+            LastName = "User",
+            Email = "test@gmail.com",
+            PhoneNumber = "0123456789",
+            Password = "12345678",
+            Address = "123 Default St, City, Country"
         });
         return users;
+    }
+
+    public static List<Role> GenerateRoles()
+    {
+        var roles = new List<Role>();
+        roles.Add(new Role
+        {
+            Name = RoleNames.User,
+            Description = "Standard user with limited access."
+        });
+        roles.Add(new Role
+        {
+            Name = RoleNames.Admin,
+            Description = "Administrator with full access."
+        });
+        return roles;
+    }
+
+    public static List<UserRole> GenerateUserRoles()
+    {
+        var userRoles = new List<UserRole>();
+        userRoles.Add(new UserRole
+        {
+            UserId = userId,
+            RoleId = 1
+        });
+        return userRoles;
     }
 
     public static List<Food> GenerateMenu()

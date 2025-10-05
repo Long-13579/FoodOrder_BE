@@ -33,8 +33,8 @@ public class OrderController : ApiController
             : Problem(result.Errors);
     }
 
-    [HttpGet("by-userId/{userId:int}")]
-    public async Task<IActionResult> GetOrdersByUserId(int userId)
+    [HttpGet("by-userId/{userId:Guid}")]
+    public async Task<IActionResult> GetOrdersByUserId(Guid userId)
     {
         var result = await _sender.Send(new GetOrdersByUserIdQuery(userId));
 

@@ -6,9 +6,9 @@ namespace Application.Carts.Queries.GetCartItemsByUserId;
 
 public class GetCartItemsByUserIdQuery : IQuery<Result<IEnumerable<CartItem>>>
 {
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
 
-    public GetCartItemsByUserIdQuery(int userId)
+    public GetCartItemsByUserIdQuery(Guid userId)
     {
         UserId = userId;
     }

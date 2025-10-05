@@ -14,8 +14,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .NotEmpty().WithMessage("Cart item IDs cannot be empty.")
             .Must(ids => ids.All(id => id > 0)).WithMessage("All cart item IDs must be positive integers.")
             .MustAsync(BeValidCartItemIds).WithMessage("Some cart items do not exist or do not belong to the user.");
-        RuleFor(x => x.UserId)
-            .GreaterThan(0).WithMessage("User ID must be a positive integer.");
         RuleFor(x => x.CustomerName)
             .NotEmpty().WithMessage("Customer name is required.")
             .MaximumLength(100).WithMessage("Customer name cannot exceed 100 characters.");

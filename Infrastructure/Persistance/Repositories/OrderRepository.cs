@@ -36,7 +36,7 @@ public class OrderRepository : IOrderRepository
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(int customerId)
+    public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(Guid customerId)
     {
         return await _context.Orders
             .Include(o => o.OrderItems)

@@ -40,7 +40,7 @@ public class OrderFactory : IOrderFactory
             {
                 FoodId = ci.FoodId,
                 Quantity = ci.Quantity,
-                Price = ci.UnitPrice
+                UnitPrice = ci.UnitPrice
             }).ToList()
         };
 

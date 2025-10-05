@@ -16,6 +16,6 @@ public class GetCartItemsByUserIdQueryValidator : AbstractValidator<GetCartItems
             .MustExist(UserExistsAsync, "User");
     }
 
-    private async Task<bool> UserExistsAsync(int userId, CancellationToken cancellationToken) 
+    private async Task<bool> UserExistsAsync(Guid userId, CancellationToken cancellationToken) 
         => await _userRepository.ExistsAsync(userId);
 }

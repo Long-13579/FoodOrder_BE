@@ -15,4 +15,15 @@ public static class EntityExistenceValidationExtension
             .MustAsync(async (id, cancellationToken) => await existsFunc(id, cancellationToken))
             .WithMessage($"{entityName} does not exist");
     }
+
+    public static IRuleBuilderOptions<T, Guid> MustExist<T>(
+        this IRuleBuilder<T, Guid> ruleBuilder,
+        Func<Guid, CancellationToken, Task<bool>> existsFunc,
+        string entityName = "Entity")
+    {
+        return ruleBuilder
+            .NotEmpty().WithMessage($"{entityName} Id is required")
+            .MustAsync(async (id, cancellationToken) => await existsFunc(id, cancellationToken))
+            .WithMessage($"{entityName} does not exist");
+    }
 }

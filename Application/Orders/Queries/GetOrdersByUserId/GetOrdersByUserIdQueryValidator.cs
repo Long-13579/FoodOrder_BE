@@ -16,6 +16,6 @@ public class GetOrdersByUserIdQueryValidator : AbstractValidator<GetOrdersByUser
             .MustExist(UserExists, "User");
     }
 
-    private async Task<bool> UserExists(int userId, CancellationToken cancellationToken)
+    private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
         => await _userRepository.ExistsAsync(userId);
 }

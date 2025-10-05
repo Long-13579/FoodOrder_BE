@@ -16,6 +16,14 @@ public static class DbInitializer
         var users = InitialData.GenerateUsers();
         context.Users.AddRange(users);
         context.SaveChanges();
+
+        var roles = InitialData.GenerateRoles();
+        context.Roles.AddRange(roles);
+        context.SaveChanges();
+
+        var userRoles = InitialData.GenerateUserRoles();
+        context.UserRoles.AddRange(userRoles);
+        context.SaveChanges();
     }
 
 }
