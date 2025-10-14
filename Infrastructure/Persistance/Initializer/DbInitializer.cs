@@ -1,10 +1,14 @@
-﻿using Domain;
+﻿using Domain.Constants;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Persistance.Initializer;
 
 public static class DbInitializer
 {
-    public static void Initialize(AppDbContext context)
+    public static async Task Initialize(AppDbContext context,
+                                  UserManager<ApplicationUser> userManager,
+                                  RoleManager<ApplicationRole> roleManager)
     {
         if (context.Foods.Any())
             return;
@@ -13,17 +17,39 @@ public static class DbInitializer
         context.Foods.AddRange(foods);
         context.SaveChanges();
 
-        var users = InitialData.GenerateUsers();
-        context.Users.AddRange(users);
-        context.SaveChanges();
-
         var roles = InitialData.GenerateRoles();
-        context.Roles.AddRange(roles);
-        context.SaveChanges();
 
-        var userRoles = InitialData.GenerateUserRoles();
-        context.UserRoles.AddRange(userRoles);
-        context.SaveChanges();
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role.Name!))
+            {
+                await roleManager.CreateAsync(role);
+            }
+        }
+
+        var defaultUserName = "DefaultUser";
+        var defaultEmail = "test@gmail.com";
+        var defaultUser = await userManager.FindByNameAsync(defaultUserName);
+
+        if (defaultUser == null)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = defaultUserName,
+                Email = defaultEmail,
+                PhoneNumber = "0123456789",
+            };
+
+            var result = await userManager.CreateAsync(user, "12345678"); // default password
+
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, RoleNames.Customer);
+                var customer = InitialData.GenerateCustomer(user.Id);
+                await context.Customers.AddAsync(customer);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 
 }

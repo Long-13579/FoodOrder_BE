@@ -18,15 +18,15 @@ public class CartRepository : ICartRepository
         return await _context.CartItems.FirstOrDefaultAsync(x => x.Id == cartItemId);
     }
 
-    public async Task AddCartItemAsync(Guid userId, Food food, int quantity)
+    public async Task AddCartItemAsync(Guid customerId, Food food, int quantity)
     {
-        CartItem? cartItem = await _context.CartItems.FirstOrDefaultAsync(x => x.UserId == userId && x.FoodId == food.Id);
+        CartItem? cartItem = await _context.CartItems.FirstOrDefaultAsync(x => x.CustomerId == customerId && x.FoodId == food.Id);
 
         if (cartItem is null)
         {
             await _context.CartItems.AddAsync(new CartItem
             {
-                UserId = userId,
+                CustomerId = customerId,
                 FoodId = food.Id,
                 Quantity = quantity,
                 UnitPrice = food.Price,
@@ -40,10 +40,10 @@ public class CartRepository : ICartRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task ClearCartAsync(Guid userId)
+    public async Task ClearCartAsync(Guid customerId)
     {
         await _context.CartItems
-            .Where(x => x.UserId == userId)
+            .Where(x => x.CustomerId == customerId)
             .ExecuteDeleteAsync();
     }
 
@@ -54,17 +54,17 @@ public class CartRepository : ICartRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task<IEnumerable<CartItem>> GetCartByUserIdAsync(Guid userId)
+    public async Task<IEnumerable<CartItem>> GetCartByUserIdAsync(Guid customerId)
     {
         return await _context.CartItems
             .Include(x => x.Food)
-            .Where(x => x.UserId == userId).ToListAsync();
+            .Where(x => x.CustomerId == customerId).ToListAsync();
     }
 
-    public async Task<IEnumerable<CartItem>> GetCartItemByIdsAsync(Guid userId, IEnumerable<int> cartItemIds)
+    public async Task<IEnumerable<CartItem>> GetCartItemByIdsAsync(Guid customerId, IEnumerable<int> cartItemIds)
     {
         return await _context.CartItems
-            .Where(x => x.UserId == userId && cartItemIds.Contains(x.Id))
+            .Where(x => x.CustomerId == customerId && cartItemIds.Contains(x.Id))
             .ToListAsync();
     }
 

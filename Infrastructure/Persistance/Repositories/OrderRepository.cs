@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces.Persistance.Repositories;
+using Application.Common.Models;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,11 +37,33 @@ public class OrderRepository : IOrderRepository
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersByCustomerIdAsync(Guid customerId)
+    public async Task<IEnumerable<OrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId)
     {
         return await _context.Orders
-            .Include(o => o.OrderItems)
-            .Where(o => o.UserId == customerId).ToListAsync();
+            .Where(o => o.CustomerId == customerId)
+            .Select(o => new OrderDTO
+            {
+                Id = o.Id,
+                CustomerId = o.CustomerId,
+                CustomerName = o.CustomerName,
+                CustomerEmail = o.CustomerEmail,
+                CustomerPhone = o.CustomerPhone,
+                CustomerAddress = o.CustomerAddress,
+                Note = o.Note,
+                Status = o.Status,
+                CreatedAt = o.CreatedAt,
+                OrderItems = o.OrderItems.Select(oi => new OrderItemDTO
+                {
+                    Id = oi.Id,
+                    OrderId = oi.OrderId,
+                    FoodId = oi.FoodId,
+                    Quantity = oi.Quantity,
+                    Note = oi.Note,
+                    UnitPrice = oi.UnitPrice,
+                    Food = oi.Food
+                }).ToList()
+            })
+            .ToListAsync();
     }
 
     public Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status)

@@ -5,15 +5,13 @@ namespace Application.Orders.Commands.CreateOrder;
 
 public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand> 
 {
-    private readonly ICartRepository _cartRepository;
-    public CreateOrderCommandValidator(ICartRepository cartRepository)
+    public CreateOrderCommandValidator()
     {
-        _cartRepository = cartRepository;
-
+        RuleFor(x => x.CustomerId)
+            .NotEmpty().WithMessage("Customer ID is required.");
         RuleFor(x => x.CartItemIds)
             .NotEmpty().WithMessage("Cart item IDs cannot be empty.")
-            .Must(ids => ids.All(id => id > 0)).WithMessage("All cart item IDs must be positive integers.")
-            .MustAsync(BeValidCartItemIds).WithMessage("Some cart items do not exist or do not belong to the user.");
+            .Must(ids => ids.All(id => id > 0)).WithMessage("All cart item IDs must be positive integers.");
         RuleFor(x => x.CustomerName)
             .NotEmpty().WithMessage("Customer name is required.")
             .MaximumLength(100).WithMessage("Customer name cannot exceed 100 characters.");
@@ -30,13 +28,5 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .MaximumLength(200).WithMessage("Customer address cannot exceed 200 characters.");
         RuleFor(x => x.Note)
             .MaximumLength(500).WithMessage("Note cannot exceed 500 characters.");
-    }
-
-    private async Task<bool> BeValidCartItemIds(CreateOrderCommand command,
-                                    IEnumerable<int> cartItemIds,
-                                    CancellationToken cancellationToken)
-    {
-        var userCartItems = await _cartRepository.GetCartItemByIdsAsync(command.UserId, cartItemIds);
-        return cartItemIds.Count() == userCartItems.Count();
     }
 }

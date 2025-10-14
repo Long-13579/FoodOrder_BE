@@ -19,12 +19,12 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
     public async Task<Result> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var orderResult = await _orderFactory.CreateAsync(request);
-        if (!orderResult.IsSuccess || orderResult.Value is null)
+        if (!orderResult.IsSuccess)
         {
             return orderResult.Errors;
         }
 
-        await _orderRepository.AddOrderAsync(orderResult.Value);
+        await _orderRepository.AddOrderAsync(orderResult.Value!);
         return Result.Success();
     }
 }

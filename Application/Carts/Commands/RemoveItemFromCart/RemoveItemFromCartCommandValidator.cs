@@ -6,16 +6,10 @@ namespace Application.Carts.Commands.RemoveItemFromCart;
 
 public class RemoveItemFromCartCommandValidator : AbstractValidator<RemoveItemFromCartCommand>
 {
-    private readonly ICartRepository _cartRepository;
-
-    public RemoveItemFromCartCommandValidator(ICartRepository cartRepository)
+    public RemoveItemFromCartCommandValidator()
     {
-        _cartRepository = cartRepository;
-
         RuleFor(x => x.CartItemId)
-            .MustExist(CartItemExists, "Cart Item");
+            .NotEmpty().WithMessage("CartItemId is required.")
+            .GreaterThan(0).WithMessage("CartItemId must be greater than zero.");
     }
-
-    private async Task<bool> CartItemExists(int cartItemId, CancellationToken cancellationToken)
-        => await _cartRepository.ExistsAsync(cartItemId);
 }

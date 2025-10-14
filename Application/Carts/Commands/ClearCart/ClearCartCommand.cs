@@ -5,10 +5,10 @@ namespace Application.Carts.Commands.ClearCart;
 
 public class ClearCartCommand : ICommand<Result>
 {
-    public Guid UserId { get; set; }
+    public Guid CustomerId { get; init; }
 
-    public ClearCartCommand(Guid userId)
+    public ClearCartCommand(Guid customerId)
     {
-        UserId = userId;
+        CustomerId = customerId;
     }
 }

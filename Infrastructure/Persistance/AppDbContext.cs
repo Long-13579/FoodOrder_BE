@@ -1,9 +1,11 @@
 ﻿using Domain;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistance;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -11,35 +13,38 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().ToTable("Users");
         modelBuilder.Entity<Order>().ToTable("Orders");
         modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
         modelBuilder.Entity<CartItem>().ToTable("CartItems");
         modelBuilder.Entity<Food>().ToTable("Foods");
-        modelBuilder.Entity<Role>().ToTable("Roles");
-        modelBuilder.Entity<UserRole>().ToTable("UserRoles");
+        modelBuilder.Entity<Customer>().ToTable("Customers");
 
-        modelBuilder.Entity<UserRole>()
-            .HasKey(ur => new { ur.UserId, ur.RoleId });
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne(c => c.Customer)
+            .WithOne()
+            .HasForeignKey<Customer>(c => c.UserId);
 
-        modelBuilder.Entity<UserRole>()
-            .HasOne(ur => ur.User)
-            .WithMany(u => u.UserRoles)
-            .HasForeignKey(ur => ur.UserId);
+        modelBuilder.Entity<Order>()
+            .HasMany(o => o.OrderItems)
+            .WithOne(oi => oi.Order)
+            .HasForeignKey(oi => oi.OrderId);
 
-        modelBuilder.Entity<UserRole>()
-            .HasOne(ur => ur.Role)
-            .WithMany(r => r.UserRoles)
-            .HasForeignKey(ur => ur.RoleId);
+        modelBuilder.Entity<Customer>()
+            .HasMany(c => c.Orders)
+            .WithOne(o => o.Customer)
+            .HasForeignKey(o => o.CustomerId);
+
+        modelBuilder.Entity<Customer>()
+            .HasMany(c => c.CartItems)
+            .WithOne(ci => ci.Customer)
+            .HasForeignKey(ci => ci.CustomerId);
 
         base.OnModelCreating(modelBuilder);
     }
 
-    public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Role> Roles { get; set; } = null!;
-    public DbSet<UserRole> UserRoles { get; set; } = null!;
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
     public DbSet<CartItem> CartItems { get; set; } = null!;
     public DbSet<Food> Foods { get; set; } = null!;
+    public DbSet<Customer> Customers { get; set; } = null!;
 }

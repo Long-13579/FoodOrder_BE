@@ -1,53 +1,33 @@
 ﻿using Domain;
 using Domain.Constants;
+using Infrastructure.Identity;
 
 namespace Infrastructure.Persistance.Initializer;
 
 public static class InitialData
 {
-    private static Guid userId = Guid.NewGuid();
-    public static List<User> GenerateUsers()
+    public static List<ApplicationRole> GenerateRoles()
     {
-        var users = new List<User>();
-        users.Add(new User
+        var roles = new List<ApplicationRole>
         {
-            Id = userId,
-            UserName = "DefaultUser",
-            FirstName = "Default",
-            LastName = "User",
-            Email = "test@gmail.com",
-            PhoneNumber = "0123456789",
-            Password = "12345678",
-            Address = "123 Default St, City, Country"
-        });
-        return users;
-    }
-
-    public static List<Role> GenerateRoles()
-    {
-        var roles = new List<Role>();
-        roles.Add(new Role
-        {
-            Name = RoleNames.User,
-            Description = "Standard user with limited access."
-        });
-        roles.Add(new Role
-        {
-            Name = RoleNames.Admin,
-            Description = "Administrator with full access."
-        });
+            new ApplicationRole { Name = RoleNames.Customer, Description = "Standard customer with limited access." },
+            new ApplicationRole { Name = RoleNames.Admin, Description = "Administrator with full access." }
+        };
         return roles;
     }
 
-    public static List<UserRole> GenerateUserRoles()
+    public static Customer GenerateCustomer(Guid userId)
     {
-        var userRoles = new List<UserRole>();
-        userRoles.Add(new UserRole
+        return new Customer
         {
             UserId = userId,
-            RoleId = 1
-        });
-        return userRoles;
+            FirstName = "John",
+            LastName = "Doe",
+            DateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow),
+            PhoneNumber = "0123456789",
+            Email = "customer@gmail.com",
+            Address = "123 Main St, City, Country"
+        };
     }
 
     public static List<Food> GenerateMenu()

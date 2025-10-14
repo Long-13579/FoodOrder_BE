@@ -2,13 +2,17 @@
 using Application.Carts.Commands.ClearCart;
 using Application.Carts.Commands.RemoveItemFromCart;
 using Application.Carts.Commands.UpdateItemQuantity;
-using Application.Carts.Queries.GetCartItemsByUserId;
+using Application.Carts.Queries.GetCartItemsByCustomerId;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApplication1.Contracts.Carts;
+using WebApplication1.Utils;
 
 namespace WebApplication1.Controllers;
 
+[Authorize]
 [Route("api/cart")]
 public class CartController : ApiController
 {
@@ -19,10 +23,12 @@ public class CartController : ApiController
         _sender = sender;
     }
 
-    [HttpGet("{userId:Guid}")]
-    public async Task<IActionResult> GetCart(Guid userId)
+    [HttpGet]
+    public async Task<IActionResult> GetCart()
     {
-        var result = await _sender.Send(new GetCartItemsByUserIdQuery(userId));
+        var customerId = User.GetCustomerId();
+
+        var result = await _sender.Send(new GetCartItemsByCustomerIdQuery(customerId));
 
         if (result.IsSuccess)
         {
@@ -39,13 +45,14 @@ public class CartController : ApiController
     [HttpPost("add")]
     public async Task<IActionResult> AddToCart([FromBody] AddToCartRequest request)
     {
-        var command = new AddItemToCartCommand(request.UserId,
+        var customerId = User.GetCustomerId();
+        var command = new AddItemToCartCommand(customerId,
                                                request.FoodId,
                                                request.Quantity);
         var result = await _sender.Send(command);
 
         return result.IsSuccess
-            ? CreatedAtAction(nameof(GetCart), new { userId = request.UserId }, null)
+            ? CreatedAtAction(nameof(GetCart), new { }, null)
             : Problem(result.Errors);
     }
 
@@ -70,10 +77,11 @@ public class CartController : ApiController
             : Problem(result.Errors);
     }
 
-    [HttpDelete("clear/{userId:Guid}")]
-    public async Task<IActionResult> ClearCart(Guid userId)
+    [HttpDelete("clear")]
+    public async Task<IActionResult> ClearCart()
     {
-        var result = await _sender.Send(new ClearCartCommand(userId));
+        var customerId = User.GetCustomerId();
+        var result = await _sender.Send(new ClearCartCommand(customerId));
         return result.IsSuccess 
             ? Ok() 
             : Problem(result.Errors);

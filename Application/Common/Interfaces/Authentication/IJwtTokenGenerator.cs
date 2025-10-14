@@ -1,8 +1,8 @@
-﻿using Domain;
+﻿using Application.Common.Models;
 
 namespace Application.Common.Interfaces.Authentication;
 
 public interface IJwtTokenGenerator
 {
-    string GenerateToken(User user, IEnumerable<Role> role);
+    string GenerateToken(UserDTO user, IEnumerable<string> roles);
 }

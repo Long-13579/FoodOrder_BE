@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces.Authentication;
-using Domain;
+using Application.Common.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,17 +16,16 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtOptions.Value;
     }
 
-    public string GenerateToken(User user, IEnumerable<Role> roles)
+    public string GenerateToken(UserDTO user, IEnumerable<string> roles)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
-            new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("customer_id", user.CustomerId.ToString() ?? string.Empty),
         };
 
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var key = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(_jwtSettings.Secret)

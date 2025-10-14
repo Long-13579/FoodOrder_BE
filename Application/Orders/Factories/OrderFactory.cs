@@ -17,7 +17,7 @@ public class OrderFactory : IOrderFactory
 
     public async Task<Result<Order>> CreateAsync(CreateOrderCommand command)
     {
-        var cartItems = await _cartRepository.GetCartItemByIdsAsync(command.UserId, command.CartItemIds);
+        var cartItems = await _cartRepository.GetCartItemByIdsAsync(command.CustomerId, command.CartItemIds);
         if (!cartItems.Any())
         {
             return Errors.CartItem.Empty();
@@ -30,7 +30,7 @@ public class OrderFactory : IOrderFactory
 
         var order = new Order
         {
-            UserId = command.UserId,
+            CustomerId = command.CustomerId,
             CustomerName = command.CustomerName,
             CustomerEmail = command.CustomerEmail,
             CustomerPhone = command.CustomerPhone,

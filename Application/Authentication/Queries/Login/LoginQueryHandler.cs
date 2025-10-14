@@ -20,13 +20,17 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<Authenticati
 
     public async Task<Result<AuthenticationResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserByUserNameAsync(request.UserName);
-        if (user is null || user.Password != request.Password)
-            return Errors.User.LoginFailure();
+        var authResult = await _userRepository.AuthenticateAsync(request.UserName, request.Password);
+        if (!authResult.IsSuccess)
+            return authResult.Errors;
 
-        var roles = await _userRepository.GetRolesByUserIdAsync(user.Id);
+        var user = authResult.Value!;
 
-        var token = _jwtTokenGenerator.GenerateToken(user, roles);
+        var rolesResult = await _userRepository.GetRolesByUserIdAsync(user.Id);
+        if (!rolesResult.IsSuccess)
+            return rolesResult.Errors;
+
+        var token = _jwtTokenGenerator.GenerateToken(user, rolesResult.Value!);
 
         return new AuthenticationResult(user, token);
     }

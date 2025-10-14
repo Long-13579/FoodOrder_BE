@@ -1,4 +1,5 @@
-﻿using Application.Authentication.Queries.Login;
+﻿using Application.Authentication.Commands.Register;
+using Application.Authentication.Queries.Login;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,18 +33,15 @@ public class AuthenticationController : ApiController
         }
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    [HttpPost("customer-register")]
+    public async Task<IActionResult> CustomerRegister([FromBody] CustomerRegisterRequest request)
     {
-        var command = new Application.Authentication.Commands.Register.RegisterCommand
+        var command = new CustomerRegisterCommand
         {
             UserName = request.UserName,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
             Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
             Password = request.Password,
-            Address = request.Address,
+            PhoneNumber = request.PhoneNumber
         };
 
         var result = await _sender.Send(command);
@@ -60,8 +58,10 @@ public class AuthenticationController : ApiController
 
     [HttpGet("testUser")]
     [Authorize(Roles = "User")]
-    public IActionResult TestUser()
+    public async Task<IActionResult> TestUser()
     {
+        await Task.CompletedTask;
+        Console.WriteLine("test user");
         return Ok("User endpoint is accessible.");
     }
 }

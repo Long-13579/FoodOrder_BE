@@ -6,7 +6,7 @@ namespace Application.Orders.Commands.CreateOrder;
 public class CreateOrderCommand : ICommand<Result>
 {
     public List<int> CartItemIds { get; set; } = new List<int>();
-    public Guid UserId { get; set; }
+    public Guid CustomerId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
     public string CustomerEmail { get; set; } = string.Empty;
     public string CustomerPhone { get; set; } = string.Empty;
@@ -14,7 +14,7 @@ public class CreateOrderCommand : ICommand<Result>
     public string? Note { get; set; }
 
     public CreateOrderCommand(List<int> cartItemIds,
-                              Guid userId,
+                              Guid customerId,
                               string customerName,
                               string customerEmail,
                               string customerPhone,
@@ -22,7 +22,7 @@ public class CreateOrderCommand : ICommand<Result>
                               string? note = null)
     {
         CartItemIds = cartItemIds;
-        UserId = userId;
+        CustomerId = customerId;
         CustomerName = customerName;
         CustomerEmail = customerEmail;
         CustomerPhone = customerPhone;

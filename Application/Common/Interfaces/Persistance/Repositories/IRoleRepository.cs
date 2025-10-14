@@ -1,9 +1,10 @@
-﻿using Domain;
+﻿using Application.Common.Models;
+using Application.Common.Results;
 
 namespace Application.Common.Interfaces.Persistance.Repositories;
 
-public interface IRoleRepository
+public interface IRoleRepository : IRepository<Guid>
 {
-    Task<int> CreateRoleAsync(string roleName);
-    Task<Role?> GetRoleByNameAsync(string roleName);
+    Task<Result> CreateRoleAsync(RoleDTO role);
+    Task<Result<RoleDTO>> GetRoleByNameAsync(string roleName);
 }

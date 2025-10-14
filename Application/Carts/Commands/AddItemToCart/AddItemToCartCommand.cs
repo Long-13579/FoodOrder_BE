@@ -5,13 +5,13 @@ namespace Application.Carts.Commands.AddItemToCart;
 
 public class AddItemToCartCommand : ICommand<Result>
 {
-    public Guid UserId { get; set; }
-    public int FoodId { get; set; }
-    public int Quantity { get; set; }
+    public Guid CustomerId { get; init; }
+    public int FoodId { get; init; }
+    public int Quantity { get; init; }
 
-    public AddItemToCartCommand(Guid userId, int foodId, int quantity)
+    public AddItemToCartCommand(Guid customerId, int foodId, int quantity)
     {
-        UserId = userId;
+        CustomerId = customerId;
         FoodId = foodId;
         Quantity = quantity;
     }

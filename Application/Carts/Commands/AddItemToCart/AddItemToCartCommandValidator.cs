@@ -6,18 +6,13 @@ namespace Application.Carts.Commands.AddItemToCart;
 
 public class AddItemToCartCommandValidator : AbstractValidator<AddItemToCartCommand>
 {
-    private readonly IFoodRepository _foodRepository;
-    public AddItemToCartCommandValidator(IFoodRepository foodRepository)
+    public AddItemToCartCommandValidator()
     {
-        _foodRepository = foodRepository;
-
         RuleFor(x => x.FoodId)
-            .MustExist(FoodExists, "Food");
+            .NotEmpty().WithMessage("FoodId is required.")
+            .GreaterThan(0).WithMessage("FoodId must be greater than 0.");
         RuleFor(x => x.Quantity)
             .NotEmpty().WithMessage("Quantity is required.")
             .GreaterThan(0).WithMessage("Quantity must be greater than 0.");
     }
-
-    private async Task<bool> FoodExists(int foodId, CancellationToken cancellationToken)
-        => await _foodRepository.ExistsAsync(foodId);
 }

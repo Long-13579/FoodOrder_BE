@@ -1,63 +1,103 @@
 ﻿using Application.Common.Interfaces.Persistance.Repositories;
-using Domain;
+using Application.Common.Models;
+using Application.Common.Results;
+using Application.Common.Errors;
+using Infrastructure.Common.Mappings;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistance.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public UserRepository(AppDbContext dbContext)
+    public UserRepository(UserManager<ApplicationUser> userManager)
     {
-        _context = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
     }
 
-    public async Task AddUserAsync(User user)
+    public async Task<Result> AssignRoleToUserAsync(Guid userId, string roleName)
     {
-        await _context.Users.AddAsync(user);
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+            return Errors.User.NotFound(userId);
+
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+        return result.Succeeded
+            ? Result.Success()
+            : Result.Failure(result.Errors.Select(e => new Error(e.Code, e.Description, ErrorType.Conflict)).ToList());
     }
 
-    public async Task AssignRoleToUserAsync(Guid userId, int roleId)
+    public async Task<Result<UserDTO>> AuthenticateAsync(string userName, string password)
     {
-        await _context.UserRoles.AddAsync(new UserRole
-        {
-            UserId = userId,
-            RoleId = roleId,
-            AssignedAt = DateTime.UtcNow
-        });
+        var user = await _userManager.FindByNameAsync(userName);
+        if (user is null)
+            return Errors.User.NotFound(userName);
+
+        var isValid = await _userManager.CheckPasswordAsync(user, password);
+        return isValid
+            ? user.ToDTO()
+            : Errors.User.LoginFailure();
     }
 
-    public Task<bool> ExistsAsync(Guid id)
+    public async Task<Result> CreateUserAsync(UserDTO user, string password)
     {
-        return _context.Users.AnyAsync(x => x.Id == id);
+        var result = await _userManager.CreateAsync(user.ToEntity(), password);
+        return result.Succeeded
+            ? Result.Success()
+            : Result.Failure(result.Errors.Select(e => new Error(e.Code, e.Description, ErrorType.Conflict)).ToList());
     }
 
-    public async Task<List<Role>> GetRolesByUserIdAsync(Guid userId)
+    public async Task<bool> ExistsAsync(Guid id)
     {
-        return await _context.UserRoles
-            .Where(ur => ur.UserId == userId)
-            .Include(ur => ur.Role)
-            .Select(ur => ur.Role)
-            .ToListAsync();
+        return await _userManager.Users.AnyAsync(u => u.Id == id);
     }
 
-    public async Task<User?> GetUserByIdAsync(Guid userId)
+    public async Task<Result<List<string>>> GetRolesByUserIdAsync(Guid userId)
     {
-        return await _context.Users
-            .FirstOrDefaultAsync(x => x.Id == userId);
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+            return Errors.User.NotFound(userId);
+
+        var roles = await _userManager.GetRolesAsync(user);
+        return roles.ToList();
     }
 
-    public Task<User?> GetUserByUserNameAsync(string userName)
+    public async Task<Result<UserDTO>> GetUserByEmailAsync(string email)
     {
-        return _context.Users
-            .FirstOrDefaultAsync(x => x.UserName == userName);
+        var result = await _userManager.FindByEmailAsync(email);
+        return result is null
+            ? Errors.User.NotFound(email)
+            : result.ToDTO();
     }
 
-    public async Task RemoveRoleFromUserAsync(Guid userId, int roleId)
+    public async Task<Result<UserDTO>> GetUserByIdAsync(Guid userId)
     {
-        await _context.UserRoles
-            .Where(ur => ur.UserId == userId && ur.RoleId == roleId)
-            .ExecuteDeleteAsync();
+        var result = await _userManager.FindByIdAsync(userId.ToString());
+        return result is null
+            ? Errors.User.NotFound(userId)
+            : result.ToDTO();
+    }
+
+    public async Task<Result<UserDTO>> GetUserByUserNameAsync(string userName)
+    {
+        var result = await _userManager.FindByNameAsync(userName);
+        return result is null
+            ? Errors.User.NotFound(userName)
+            : result.ToDTO();
+    }
+
+    public async Task<Result> RemoveRoleFromUserAsync(Guid userId, string roleName)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+            return Errors.User.NotFound(userId);
+
+        var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+        return result.Succeeded
+            ? Result.Success()
+            : Result.Failure(result.Errors.Select(e => new Error(e.Code, e.Description, ErrorType.Conflict)).ToList());
     }
 }

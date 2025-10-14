@@ -1,7 +1,9 @@
 using Application;
 using Infrastructure;
+using Infrastructure.Identity;
 using Infrastructure.Persistance;
 using Infrastructure.Persistance.Initializer;
+using Microsoft.AspNetCore.Identity;
 using WebApplication1;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,10 +24,14 @@ var app = builder.Build();
         var services = scope.ServiceProvider;
 
         var dbContext = services.GetRequiredService<AppDbContext>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+
         dbContext.Database.EnsureCreated();
-        DbInitializer.Initialize(dbContext);
+        await DbInitializer.Initialize(dbContext, userManager, roleManager);
     }
 
+    app.UseRouting();
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();

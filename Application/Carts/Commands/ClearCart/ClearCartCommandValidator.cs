@@ -6,16 +6,9 @@ namespace Application.Carts.Commands.ClearCart;
 
 public class ClearCartCommandValidator : AbstractValidator<ClearCartCommand>
 {
-    private readonly IUserRepository _userRepository;
-
-    public ClearCartCommandValidator(IUserRepository userRepository)
+    public ClearCartCommandValidator()
     {
-        _userRepository = userRepository;
-
-        RuleFor(x => x.UserId)
-            .MustExist(UserExists, "User");
+        RuleFor(x => x.CustomerId)
+            .NotEmpty().WithMessage("CustomerId is required.");
     }
-
-    private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
-        => await _userRepository.ExistsAsync(userId);
 }

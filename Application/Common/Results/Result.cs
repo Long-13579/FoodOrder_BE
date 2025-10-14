@@ -11,6 +11,8 @@ public record Result
         Errors = errors;
     }
 
+    public List<string> ErrorsMessage => Errors.Where(e => e != Error.None).Select(e => e.Message).ToList();
+
     public static Result Success() => new(true, [Error.None]);
     public static Result Failure(params Error[] errors) => new(false, errors.ToList());
     public static Result Failure(List<Error> errors) => new(false, errors);
