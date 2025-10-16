@@ -6,7 +6,6 @@ using Application.Carts.Queries.GetCartItemsByCustomerId;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using WebApplication1.Contracts.Carts;
 using WebApplication1.Utils;
 
@@ -59,8 +58,10 @@ public class CartController : ApiController
     [HttpPut("update")]
     public async Task<IActionResult> UpdateCartItem(UpdateCartItemRequest request)
     {
+        var customerId = User.GetCustomerId();
         var command = new UpdateItemQuantityCommand(request.CartItemId,
-                                                    request.Quantity);
+                                                    request.Quantity,
+                                                    customerId);
         var result = await _sender.Send(command);
 
         return result.IsSuccess
@@ -71,7 +72,8 @@ public class CartController : ApiController
     [HttpDelete("remove/{cartItemId:int}")]
     public async Task<IActionResult> RemoveCartItem(int cartItemId)
     {
-        var result = await _sender.Send(new RemoveItemFromCartCommand(cartItemId));
+        var customerId = User.GetCustomerId();
+        var result = await _sender.Send(new RemoveItemFromCartCommand(cartItemId, customerId));
         return result.IsSuccess 
             ? Ok() 
             : Problem(result.Errors);

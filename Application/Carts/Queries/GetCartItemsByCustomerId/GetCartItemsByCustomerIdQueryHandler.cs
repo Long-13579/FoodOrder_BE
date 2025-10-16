@@ -16,7 +16,7 @@ public class GetCartItemsByCustomerIdQueryHandler : IRequestHandler<GetCartItems
 
     public async Task<Result<IEnumerable<CartItem>>> Handle(GetCartItemsByCustomerIdQuery request, CancellationToken cancellationToken)
     {
-        var result = await _cartRepository.GetCartByUserIdAsync(request.CustomerId);
+        var result = await _cartRepository.GetCartByCustomerIdAsync(request.CustomerId);
         return ResultFactory.From(result);
     }
 }

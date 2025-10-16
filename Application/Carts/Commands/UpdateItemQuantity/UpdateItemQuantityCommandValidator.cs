@@ -13,12 +13,12 @@ public class UpdateItemQuantityCommandValidator : AbstractValidator<UpdateItemQu
         _cartRepository = cartRepository;
 
         RuleFor(x => x.CartItemId)
-            .MustExist(CartExists, "Cart Item");
+            .NotEmpty().WithMessage("CartItemId is required")
+            .GreaterThan(0).WithMessage("CartItemId must be greater than 0.");
         RuleFor(x => x.Quantity)
             .NotEmpty().WithMessage("Quantity is required")
             .GreaterThan(0).WithMessage("Quantity must be greater than 0.");
+        RuleFor(x => x.CustomerId)
+            .NotEmpty().WithMessage("CustomerId is required");
     }
-
-    private async Task<bool> CartExists(int cartItemId, CancellationToken cancellationToken)
-        => await _cartRepository.ExistsAsync(cartItemId);
 }

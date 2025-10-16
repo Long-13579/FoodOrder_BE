@@ -54,7 +54,7 @@ public class CartRepository : ICartRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task<IEnumerable<CartItem>> GetCartByUserIdAsync(Guid customerId)
+    public async Task<IEnumerable<CartItem>> GetCartByCustomerIdAsync(Guid customerId)
     {
         return await _context.CartItems
             .Include(x => x.Food)
