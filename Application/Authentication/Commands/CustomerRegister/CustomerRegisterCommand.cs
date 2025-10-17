@@ -4,11 +4,13 @@ using Application.Common.Results;
 
 namespace Application.Authentication.Commands.Register;
 
-public class CustomerRegisterCommand : ICommand<Result<AuthenticationResult>>
+public record CustomerRegisterCommand(
+    string UserName,
+    string Email,
+    string Password,
+    string PhoneNumber
+) : ICommand<Result<AuthenticationResult>>
 {
-    public string UserName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
     public string RoleName { get; } = "Customer";
 }
+

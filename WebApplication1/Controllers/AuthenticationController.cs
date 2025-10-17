@@ -36,13 +36,11 @@ public class AuthenticationController : ApiController
     [HttpPost("customer-register")]
     public async Task<IActionResult> CustomerRegister([FromBody] CustomerRegisterRequest request)
     {
-        var command = new CustomerRegisterCommand
-        {
-            UserName = request.UserName,
-            Email = request.Email,
-            Password = request.Password,
-            PhoneNumber = request.PhoneNumber
-        };
+        var command = new CustomerRegisterCommand(
+            request.UserName,
+            request.Email,
+            request.Password,
+            request.PhoneNumber);
 
         var result = await _sender.Send(command);
 

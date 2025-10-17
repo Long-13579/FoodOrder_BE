@@ -4,6 +4,6 @@ using Domain;
 
 namespace Application.Foods.Queries.GetAllFoods;
 
-public class GetAllFoodsQuery : IQuery<Result<IEnumerable<Food>>>
+public record GetAllFoodsQuery : IQuery<Result<IEnumerable<Food>>>
 {
 }

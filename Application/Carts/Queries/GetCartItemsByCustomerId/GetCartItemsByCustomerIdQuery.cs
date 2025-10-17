@@ -4,12 +4,7 @@ using Domain;
 
 namespace Application.Carts.Queries.GetCartItemsByCustomerId;
 
-public class GetCartItemsByCustomerIdQuery : IQuery<Result<IEnumerable<CartItem>>>
-{
-    public Guid CustomerId { get; init; }
-
-    public GetCartItemsByCustomerIdQuery(Guid customerId)
-    {
-        CustomerId = customerId;
-    }
-}
+public record GetCartItemsByCustomerIdQuery(
+    Guid CustomerId
+) : IQuery<Result<IEnumerable<CartItem>>>
+{ }

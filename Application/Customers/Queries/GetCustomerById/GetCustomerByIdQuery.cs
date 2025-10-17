@@ -4,7 +4,7 @@ using Domain;
 
 namespace Application.Customers.Queries.GetCustomerById;
 
-public class GetCustomerByIdQuery : IQuery<Result<Customer>>
-{
-    public Guid Id { get; set; }
-}
+public record GetCustomerByIdQuery(
+    Guid Id
+) : IQuery<Result<Customer>>
+{ }

@@ -24,7 +24,7 @@ public class CustomerController : ApiController
     {
         var customerId = User.GetCustomerId();
 
-        var query = new GetCustomerByIdQuery { Id = customerId};
+        var query = new GetCustomerByIdQuery(customerId);
 
         var customerResult = await _sender.Send(query);
 
@@ -38,14 +38,12 @@ public class CustomerController : ApiController
     {
         var customerId = User.GetCustomerId();
 
-        var command = new UpdateCustomerCommand
-        {
-            Id = customerId,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            DateOfBirth = request.DateOfBirth,
-            Address = request.Address
-        };
+        var command = new UpdateCustomerCommand(
+            customerId,
+            request.FirstName,
+            request.LastName,
+            request.DateOfBirth,
+            request.Address);
 
         var result = await _sender.Send(command);
         return result.IsSuccess 

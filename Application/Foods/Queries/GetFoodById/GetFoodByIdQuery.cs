@@ -4,11 +4,7 @@ using Domain;
 
 namespace Application.Foods.Queries.GetFoodById;
 
-public class GetFoodByIdQuery : IQuery<Result<Food>>
-{
-    public int Id { get; set; }
-    public GetFoodByIdQuery(int id)
-    {
-        Id = id;
-    }
-}
+public record GetFoodByIdQuery(
+    int Id
+) : IQuery<Result<Food>>
+{ }

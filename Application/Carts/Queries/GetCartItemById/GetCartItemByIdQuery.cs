@@ -4,11 +4,7 @@ using Domain;
 
 namespace Application.Carts.Queries.GetCartItemById;
 
-public class GetCartItemByIdQuery : IQuery<Result<CartItem>>
-{
-    public int Id { get; set; }
-    public GetCartItemByIdQuery(int id)
-    {
-        Id = id;
-    }
-}
+public record GetCartItemByIdQuery(
+    int Id
+) : IQuery<Result<CartItem>>
+{ }

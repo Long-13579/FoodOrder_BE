@@ -12,6 +12,6 @@ public class RemoveItemFromCartCommandValidator : AbstractValidator<RemoveItemFr
             .NotEmpty().WithMessage("CartItemId is required.")
             .GreaterThan(0).WithMessage("CartItemId must be greater than zero.");
         RuleFor(x => x.CustomerId)
-            .NotEmpty().WithMessage("CustomerId is required.")
+            .NotEmpty().WithMessage("CustomerId is required.");
     }
 }
