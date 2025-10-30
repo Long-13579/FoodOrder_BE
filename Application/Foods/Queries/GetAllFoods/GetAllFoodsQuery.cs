@@ -1,9 +1,9 @@
-﻿using Application.Common.Requests;
+﻿using Application.Common.Models;
+using Application.Common.Requests;
 using Application.Common.Results;
-using Domain;
 
 namespace Application.Foods.Queries.GetAllFoods;
 
-public record GetAllFoodsQuery : IQuery<Result<IEnumerable<Food>>>
+public record GetAllFoodsQuery : IQuery<Result<IEnumerable<FoodDTO>>>
 {
 }

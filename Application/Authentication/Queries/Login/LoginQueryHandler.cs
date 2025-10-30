@@ -20,7 +20,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<Authenticati
 
     public async Task<Result<AuthenticationResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
-        var authResult = await _userRepository.AuthenticateAsync(request.UserName, request.Password);
+        var authResult = await _userRepository.AuthenticateAsync(request.Email, request.Password);
         if (!authResult.IsSuccess)
             return authResult.Errors;
 

@@ -17,6 +17,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, 
         modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
         modelBuilder.Entity<CartItem>().ToTable("CartItems");
         modelBuilder.Entity<Food>().ToTable("Foods");
+        modelBuilder.Entity<Category>().ToTable("Categories");
         modelBuilder.Entity<Customer>().ToTable("Customers");
 
         modelBuilder.Entity<ApplicationUser>()
@@ -47,4 +48,5 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, 
     public DbSet<CartItem> CartItems { get; set; } = null!;
     public DbSet<Food> Foods { get; set; } = null!;
     public DbSet<Customer> Customers { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
 }

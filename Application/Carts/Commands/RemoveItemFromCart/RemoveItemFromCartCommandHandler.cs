@@ -21,7 +21,7 @@ public class RemoveItemFromCartCommandHandler : IRequestHandler<RemoveItemFromCa
         {
             return Errors.CartItem.NotFound(request.CartItemId);
         }
-        await _cartRepository.DeleteCartItemAsync(request.CartItemId);
+        await _cartRepository.DeleteCartItemAsync(request.CustomerId, request.CartItemId);
         return Result.Success();
     }
 }

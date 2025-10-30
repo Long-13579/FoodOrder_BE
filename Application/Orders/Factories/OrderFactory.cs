@@ -3,6 +3,7 @@ using Application.Orders.Commands.CreateOrder;
 using Application.Common.Errors;
 using Domain;
 using Application.Common.Interfaces.Persistance.Repositories;
+using Application.Common.Models;
 
 namespace Application.Orders.Factories;
 

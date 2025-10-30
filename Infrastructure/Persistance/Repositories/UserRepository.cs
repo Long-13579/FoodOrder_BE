@@ -30,11 +30,11 @@ public class UserRepository : IUserRepository
             : Result.Failure(result.Errors.Select(e => new Error(e.Code, e.Description, ErrorType.Conflict)).ToList());
     }
 
-    public async Task<Result<UserDTO>> AuthenticateAsync(string userName, string password)
+    public async Task<Result<UserDTO>> AuthenticateAsync(string email, string password)
     {
-        var user = await _userManager.FindByNameAsync(userName);
+        var user = await _userManager.FindByEmailAsync(email);
         if (user is null)
-            return Errors.User.NotFound(userName);
+            return Errors.User.NotFound(email);
 
         var isValid = await _userManager.CheckPasswordAsync(user, password);
         return isValid

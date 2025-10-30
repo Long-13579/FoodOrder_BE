@@ -2,12 +2,12 @@
 
 public class LoginRequest
 {
-    public string UserName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 
-    public LoginRequest(string userName, string password)
+    public LoginRequest(string email, string password)
     {
-        UserName = userName;
+        Email = email;
         Password = password;
     }
 }

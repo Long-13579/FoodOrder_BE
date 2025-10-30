@@ -14,27 +14,49 @@ public class OrderRepository : IOrderRepository
         _context = context;
     }
 
-    public async Task<int> AddOrderAsync(Order order)
+    public async Task AddOrderAsync(Order order)
     {
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();
-
-        return order.Id;
     }
 
-    public Task DeleteOrderAsync(int orderId)
+    public Task DeleteOrderAsync(Guid orderId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> ExistsAsync(int id)
+    public Task<bool> ExistsAsync(Guid id)
     {
         return _context.Orders.AnyAsync(x => x.Id == id);
     }
 
-    public Task<Order?> GetOrderByIdAsync(int orderId)
+    public async Task<OrderDTO?> GetOrderByIdAsync(Guid orderId)
     {
-        throw new NotImplementedException();
+        return await _context.Orders
+            .Where(o => o.Id == orderId)
+            .Select(o => new OrderDTO
+            {
+                Id = o.Id,
+                CustomerId = o.CustomerId,
+                CustomerName = o.CustomerName,
+                CustomerEmail = o.CustomerEmail,
+                CustomerPhone = o.CustomerPhone,
+                CustomerAddress = o.CustomerAddress,
+                Note = o.Note,
+                Status = o.Status,
+                CreatedAt = o.CreatedAt,
+                OrderItems = o.OrderItems.Select(oi => new OrderItemDTO
+                {
+                    Id = oi.Id,
+                    OrderId = oi.OrderId,
+                    FoodId = oi.FoodId,
+                    Quantity = oi.Quantity,
+                    Note = oi.Note,
+                    UnitPrice = oi.UnitPrice,
+                    Food = oi.Food
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<OrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId)
@@ -66,13 +88,14 @@ public class OrderRepository : IOrderRepository
             .ToListAsync();
     }
 
-    public Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status)
+    public Task<IEnumerable<OrderDTO>> GetOrdersByStatusAsync(OrderStatus status)
     {
         throw new NotImplementedException();
     }
 
     public Task UpdateOrderAsync(Order order)
     {
-        throw new NotImplementedException();
+        _context.Orders.Update(order);
+        return Task.CompletedTask;
     }
 }

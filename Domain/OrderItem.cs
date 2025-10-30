@@ -2,8 +2,8 @@
 
 public class OrderItem
 {
-    public int Id { get; set; }
-    public int OrderId { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid OrderId { get; set; }
     public int FoodId { get; set; }
     public int Quantity { get; set; }
     public string Note { get; set; } = string.Empty;

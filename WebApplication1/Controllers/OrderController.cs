@@ -33,7 +33,7 @@ public class OrderController : ApiController
         var result = await _sender.Send(command);
 
         return result.IsSuccess
-            ? CreatedAtAction(nameof(GetOrdersByCustomerId), new { CustomerId = customerId }, null)
+            ? CreatedAtAction(nameof(GetOrdersByCustomerId), new { CustomerId = customerId }, new { payUrl = result.Value!})
             : Problem(result.Errors);
     }
 
@@ -44,7 +44,7 @@ public class OrderController : ApiController
         var result = await _sender.Send(new GetOrdersByCustomerIdQuery(customerId));
 
         return result.IsSuccess 
-            ? Ok(result.Value) 
+            ? Ok(OrderResponse.FromDomain(result.Value!)) 
             : Problem(result.Errors);
     }
 }

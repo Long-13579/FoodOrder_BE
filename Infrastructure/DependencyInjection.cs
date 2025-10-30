@@ -1,8 +1,10 @@
 ﻿using Application.Common.Interfaces.Authentication;
+using Application.Common.Interfaces.Payment;
 using Application.Common.Interfaces.Persistance;
 using Application.Common.Interfaces.Persistance.Repositories;
 using Infrastructure.Authentication;
 using Infrastructure.Identity;
+using Infrastructure.Payment.Momo;
 using Infrastructure.Persistance;
 using Infrastructure.Persistance.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -39,10 +41,15 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         // Add JWT Authentication
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+
+        //Add Momo Payment
+        services.Configure<MomoSettings>(configuration.GetSection(MomoSettings.SectionName));
+        services.AddScoped<IMomoPayment, MomoPayment>();
 
         return services;
     }

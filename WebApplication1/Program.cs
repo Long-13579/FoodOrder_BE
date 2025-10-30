@@ -31,6 +31,7 @@ var app = builder.Build();
         await DbInitializer.Initialize(dbContext, userManager, roleManager);
     }
 
+    app.UseStaticFiles();
     app.UseRouting();
     app.UseHttpsRedirection();
     app.UseAuthentication();

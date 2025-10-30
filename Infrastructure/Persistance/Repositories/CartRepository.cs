@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces.Persistance.Repositories;
+using Application.Common.Models;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ public class CartRepository : ICartRepository
         return await _context.CartItems.FirstOrDefaultAsync(x => x.Id == cartItemId);
     }
 
-    public async Task AddCartItemAsync(Guid customerId, Food food, int quantity)
+    public async Task AddCartItemAsync(Guid customerId, FoodDTO food, int quantity)
     {
         CartItem? cartItem = await _context.CartItems.FirstOrDefaultAsync(x => x.CustomerId == customerId && x.FoodId == food.Id);
 
@@ -47,10 +48,10 @@ public class CartRepository : ICartRepository
             .ExecuteDeleteAsync();
     }
 
-    public async Task DeleteCartItemAsync(int cartItemId)
+    public async Task DeleteCartItemAsync(Guid customerId, int cartItemId)
     {
         await _context.CartItems
-            .Where(x => x.Id == cartItemId)
+            .Where(x => x.Id == cartItemId && x.CustomerId == customerId)
             .ExecuteDeleteAsync();
     }
 
@@ -79,5 +80,12 @@ public class CartRepository : ICartRepository
     public Task<bool> ExistsAsync(int id)
     {
         return _context.CartItems.AnyAsync(x => x.Id == id);
+    }
+
+    public async Task DeleteCartItemsAsync(Guid customerId, IEnumerable<int> cartItemIds)
+    {
+        await _context.CartItems
+            .Where(x => cartItemIds.Contains(x.Id) && x.CustomerId == customerId)
+            .ExecuteDeleteAsync();
     }
 }

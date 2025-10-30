@@ -13,6 +13,10 @@ public static class DbInitializer
         if (context.Foods.Any())
             return;
 
+        var categories = InitialData.GenerateCategories();
+        context.Categories.AddRange(categories);
+        context.SaveChanges();
+
         var foods = InitialData.GenerateMenu();
         context.Foods.AddRange(foods);
         context.SaveChanges();

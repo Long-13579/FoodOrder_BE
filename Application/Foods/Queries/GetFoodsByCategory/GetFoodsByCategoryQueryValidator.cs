@@ -6,7 +6,8 @@ public class GetFoodsByCategoryQueryValidator : AbstractValidator<GetFoodsByCate
 {
     public GetFoodsByCategoryQueryValidator()
     {
-        RuleFor(x => x.Category)
-            .NotEmpty().WithMessage("Category is required.");
+        RuleFor(x => x.CategoryId)
+            .NotEmpty().WithMessage("CategoryId is required.")
+            .GreaterThan(0).WithMessage("CategoryId must greater than 0.");
     }
 }

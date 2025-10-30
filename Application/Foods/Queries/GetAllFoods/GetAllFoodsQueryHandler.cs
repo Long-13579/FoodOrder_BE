@@ -1,11 +1,11 @@
 ﻿using Application.Common.Interfaces.Persistance.Repositories;
+using Application.Common.Models;
 using Application.Common.Results;
-using Domain;
 using MediatR;
 
 namespace Application.Foods.Queries.GetAllFoods;
 
-public class GetAllFoodsQueryHandler : IRequestHandler<GetAllFoodsQuery, Result<IEnumerable<Food>>>
+public class GetAllFoodsQueryHandler : IRequestHandler<GetAllFoodsQuery, Result<IEnumerable<FoodDTO>>>
 {
     private readonly IFoodRepository _foodRepository;
 
@@ -14,9 +14,9 @@ public class GetAllFoodsQueryHandler : IRequestHandler<GetAllFoodsQuery, Result<
         _foodRepository = foodRepository ?? throw new ArgumentNullException(nameof(foodRepository));
     }
 
-    public async Task<Result<IEnumerable<Food>>> Handle(GetAllFoodsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IEnumerable<FoodDTO>>> Handle(GetAllFoodsQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Food> foods = await _foodRepository.GetAllFoodsAsync();
+        IEnumerable<FoodDTO> foods = await _foodRepository.GetAllFoodsAsync();
         return ResultFactory.From(foods);
     }
 }

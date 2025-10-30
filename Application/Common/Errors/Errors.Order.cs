@@ -6,7 +6,7 @@ public partial class Errors
 {
     public static class Order
     {
-        public static Error NotFound(int orderId) =>
+        public static Error NotFound(Guid orderId) =>
             new(
                 Code: "Order.NotFound",
                 Description: $"Order with ID '{orderId}' was not found.",
@@ -23,6 +23,12 @@ public partial class Errors
                 Code: "Order.MissInformation",
                 Description: $"Order miss information",
                 Type: ErrorType.Validation
+            );
+        public static Error Authorization() =>
+            new(
+                Code: "Order.Authorization",
+                Description: $"You are not authorized to access this order.",
+                Type: ErrorType.Unauthorized
             );
     }
 }

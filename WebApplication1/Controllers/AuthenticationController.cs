@@ -20,7 +20,7 @@ public class AuthenticationController : ApiController
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var query = new LoginQuery(request.UserName, request.Password);
+        var query = new LoginQuery(request.Email, request.Password);
         var result = await _sender.Send(query);
 
         if (result.IsSuccess && result.Value is not null)

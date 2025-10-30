@@ -11,5 +11,5 @@ public record CreateOrderCommand(
     string CustomerPhone,
     string CustomerAddress,
     string? Note = null
-) : ICommand<Result>
+) : ICommand<Result<string>>
 { }

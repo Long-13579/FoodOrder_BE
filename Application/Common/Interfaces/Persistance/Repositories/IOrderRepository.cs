@@ -3,12 +3,12 @@ using Domain;
 
 namespace Application.Common.Interfaces.Persistance.Repositories;
 
-public interface IOrderRepository : IRepository<int>
+public interface IOrderRepository : IRepository<Guid>
 {
-    Task<Order?> GetOrderByIdAsync(int orderId);
+    Task<OrderDTO?> GetOrderByIdAsync(Guid orderId);
     Task<IEnumerable<OrderDTO>> GetOrdersByCustomerIdAsync(Guid customerId);
-    Task<IEnumerable<Order>> GetOrdersByStatusAsync(OrderStatus status);
-    Task<int> AddOrderAsync(Order order);
+    Task<IEnumerable<OrderDTO>> GetOrdersByStatusAsync(OrderStatus status);
+    Task AddOrderAsync(Order order);
     Task UpdateOrderAsync(Order order);
-    Task DeleteOrderAsync(int orderId);
+    Task DeleteOrderAsync(Guid orderId);
 }

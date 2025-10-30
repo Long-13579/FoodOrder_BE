@@ -5,7 +5,7 @@ using Application.Common.Results;
 namespace Application.Authentication.Queries.Login;
 
 public record LoginQuery(
-    string UserName,
+    string Email,
     string Password
 ) : IQuery<Result<AuthenticationResult>>
 { }

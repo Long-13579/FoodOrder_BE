@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces.Persistance.Repositories;
+using Application.Common.Models;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,19 +29,54 @@ public class FoodRepository : IFoodRepository
         return _context.Foods.AnyAsync(x => x.Id == id);
     }
 
-    public async Task<IEnumerable<Food>> GetAllFoodsAsync()
+    public async Task<IEnumerable<FoodDTO>> GetAllFoodsAsync()
     {
-        return await _context.Foods.ToListAsync();
+        return await _context.Foods
+            .Select(x => new FoodDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                ImageUrl = x.ImageUrl,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category.Name
+            })
+            .ToListAsync();
     }
 
-    public async Task<Food?> GetFoodByIdAsync(int id)
+    public async Task<FoodDTO?> GetFoodByIdAsync(int id)
     {
-        return await _context.Foods.Where(x => x.Id == id).FirstOrDefaultAsync();
+        return await _context.Foods
+            .Where(x => x.Id == id)
+            .Select(x => new FoodDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                ImageUrl = x.ImageUrl,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category.Name
+            })
+            .FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<Food>> GetFoodsByCategoryAsync(FoodCategory category)
+    public async Task<IEnumerable<FoodDTO>> GetFoodsByCategoryAsync(int categoryId)
     {
-        return await _context.Foods.Where(x => x.Category == category).ToListAsync();
+        return await _context.Foods
+            .Where(x => x.CategoryId == categoryId)
+            .Select(x => new FoodDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Price = x.Price,
+                ImageUrl = x.ImageUrl,
+                CategoryId = x.CategoryId,
+                CategoryName = x.Category.Name
+            })
+            .ToListAsync();
     }
 
     public Task UpdateFoodAsync(Food food)

@@ -36,9 +36,9 @@ public class FoodController : ApiController
     }
 
     [HttpGet("by-category")]
-    public async Task<IActionResult> GetFoodByCategory([FromQuery] FoodCategory category)
+    public async Task<IActionResult> GetFoodByCategory([FromQuery] int categoryId)
     {
-        var result = await _sender.Send(new GetFoodsByCategoryQuery(category));
+        var result = await _sender.Send(new GetFoodsByCategoryQuery(categoryId));
         return result.IsSuccess 
             ? Ok(result.Value) 
             : Problem(result.Errors);

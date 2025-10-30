@@ -1,10 +1,10 @@
-﻿using Application.Common.Requests;
+﻿using Application.Common.Models;
+using Application.Common.Requests;
 using Application.Common.Results;
-using Domain;
 
 namespace Application.Foods.Queries.GetFoodsByCategory;
 
 public record GetFoodsByCategoryQuery(
-    FoodCategory Category
-) : IQuery<Result<IEnumerable<Food>>>
+    int CategoryId
+) : IQuery<Result<IEnumerable<FoodDTO>>>
 { }
